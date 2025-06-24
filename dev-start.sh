@@ -13,14 +13,12 @@ if [[$EUID -ne 0]]; then
 fi
 
 echo "Starting Tailscale..."
-
-# ? I use TailScale for my connection to get around AP isolation. YMMV.
 systemctl start tailscaled
-tailscale up --ssh
 
 if systemctl is-active --quiet tailscaled; then
     echo "Tailscale is now running."
     echo "Enabling Tailscale SSH..."
+    tailscale up --ssh
 else
     echo "Failed to start tailscale."
     exit 1
