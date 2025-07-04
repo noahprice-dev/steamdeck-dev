@@ -3,7 +3,8 @@
 # Start up services for steamdeck dev
 set -e # exit on error
 
-
+# Full path to sys binaries thru Nix
+TAILSCALE_BIN="/home/deck/.nix-profile/bin/tailscale"
 # Check if user is running as root or with sudo
 # We need sudo to use systemctl gracefully
 if [[$EUID -ne 0]]; then
@@ -13,16 +14,21 @@ if [[$EUID -ne 0]]; then
 fi
 
 echo "Starting Tailscale..."
+
 systemctl start tailscaled
+sudo "$TAILSCALE_BIN" up --ssh
 
 if systemctl is-active --quiet tailscaled; then
     echo "Tailscale is now running."
     echo "Enabling Tailscale SSH..."
-    tailscale up --ssh
 else
     echo "Failed to start tailscale."
     exit 1
 fi
 
 echo "Tailscale Status:"
-tailscale status
+"$TAILSCALE_BIN" status
+
+
+
+
