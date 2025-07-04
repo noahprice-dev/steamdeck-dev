@@ -4,6 +4,9 @@
 set -e # exit on error
 
 
+# Full path to sys binaries thru Nix
+TAILSCALE_BIN="/home/deck/.nix-profile/bin/tailscale"
+
 # Check if user is running as root or with sudo
 # We need sudo to use systemctl gracefully
 if [[$EUID -ne 0]]; then
@@ -14,7 +17,7 @@ fi
 
 echo "Stopping Tailscale..."
 
-tailscale down
+sudo "$TAILSCALE_BIN" down
 systemctl stop tailscaled
 
 if ! systemctl is-active --quiet tailscaled; then
